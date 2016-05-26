@@ -15,7 +15,10 @@ def BF_new_afterCreate(self):
     f.write( 'I am '+BigWorld.player().name +'\n')
     print BigWorld.player()
     for pl in BigWorld.player().arena.vehicles.values():
-        f.write(pl['name']+' '+str(pl['accountDBID'])+' team '+str(pl['team'])+'\n')
+        f.write(pl['name']+' '+str(pl['accountDBID'])
+        +' tank '+pl['vehicleType'].type.shortUserString + ' of level '+ str(pl['vehicleType'].level)
+        +' team '+str(pl['team'])
+        +'\n')
     f.close() 
 
 BF_orig_afterCreate = Battle.afterCreate
@@ -29,9 +32,12 @@ def new_onHealthChanged(self, newHealth, attackerID, attackReasonID):
     old_onHealthChanged(self, newHealth, attackerID, attackReasonID)
     EnemyVihInfo = BigWorld.player().arena.vehicles.get(self.id)
     nameWHOdamage = BigWorld.player().arena.vehicles.get(attackerID)
+    diedOrNot=''
+    if (newHealth<1):
+        diedOrNot='SOO HE DIED'
     f = open('gamelog.txt', 'a')
     f.write (''+datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S.%f')+ 
-    ' Player '+nameWHOdamage['name'] + ' DAMAGED '+ EnemyVihInfo['name']+' and he has ' +str(newHealth)+' hp left \n')
+    ' Player '+nameWHOdamage['name'] + ' DAMAGED '+ EnemyVihInfo['name']+' and he has ' +str(newHealth)+' hp left '+diedOrNot+'\n')
     f.close() 
 old_onHealthChanged = Vehicle.onHealthChanged
 Vehicle.onHealthChanged = new_onHealthChanged
